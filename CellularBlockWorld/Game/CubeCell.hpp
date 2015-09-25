@@ -11,22 +11,14 @@ class CubeCell
 public:
 	CubeCell()
 	{
-		m_isSolid = false;
-		m_isBlack = false;
+		m_lifeValue = 0.f;
 	};
-	CubeCell(bool isSolid)
+	CubeCell(float lifeValue)
 	{
-		m_isSolid = isSolid;
-		m_isBlack = false;
-	};
-	CubeCell(bool isSolid, bool isBlack)
-	{
-		m_isSolid = isSolid;
-		m_isBlack = isBlack;
+		m_lifeValue = lifeValue;
 	};
 
-	bool m_isSolid;
-	bool m_isBlack;
+	float m_lifeValue;
 };
 
-#endif //included_Vertex
+#endif //included_CubeCell

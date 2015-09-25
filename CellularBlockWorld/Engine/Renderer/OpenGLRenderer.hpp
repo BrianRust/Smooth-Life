@@ -25,7 +25,7 @@ public:
 	OpenGLRenderer();
 	void Initialize();
 	void SendViewMatrix( const Camera& myCamera );
-	void AddCubeToBuffer( const Vector3& minPosition );
+	void AddCubeToBuffer( const Vector3& minPosition, float lifeValue );
 	void PushCubeVerticesToVBO();
 	void PopMatrix();
 	void SendCubeVBO();

@@ -129,6 +129,7 @@
     <ClInclude Include="Engine\Renderer\OpenGLRenderer.hpp" />
     <ClInclude Include="Engine\Time\Time.hpp" />
     <ClInclude Include="Game\CubeCell.hpp" />
+    <ClInclude Include="Game\Genome.hpp" />
     <ClInclude Include="Game\World.hpp" />
   </ItemGroup>
   <ItemGroup>

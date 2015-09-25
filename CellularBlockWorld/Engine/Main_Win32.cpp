@@ -111,19 +111,6 @@ LRESULT CALLBACK WindowsMessageHandlingProcedure( HWND windowHandle, UINT wmMess
 				g_windowHasFocus = false;
 				break;
 			}
-
-		case WM_MOUSEWHEEL:
-			{
-				short wheel = (short) HIWORD( wParam );
-				//DWORD wheel = GET_WHEEL_DELTA_WPARAM(wParam);
-
-
-				if ( wheel > 0 ) {
-					g_theWorld.IncreaseFocus();
-				} else {
-					g_theWorld.ReduceFocus();
-				}
-			}
 	}
 
 // 	if ( wParam == WA_ACTIVE )

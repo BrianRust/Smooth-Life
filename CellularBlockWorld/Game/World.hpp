@@ -14,6 +14,7 @@
 #include "../Engine/Time/Time.hpp"
 #include "../Engine/Renderer/OpenGLRenderer.hpp"
 #include "CubeCell.hpp"
+#include "Genome.hpp"
 
 //-------------------------------------------------------------
 class World
@@ -31,17 +32,8 @@ public:
 	void BuildZone2D();
 	void BuildZone3D();
 
-	void TestSolidCellularAutomataPass();
-
 	void GameOfLifeCellularAutomataPass2D();
 	void GameOfLifeCellularAutomataPass3D();
-
-	void TurnTargetedCellToSolid();
-	void TurnTargetedCellToNonSolid();
-
-	void IncreaseFocus();
-	void ReduceFocus();
-	void CapFocus();
 
 	void GetAllCellsInRayTrace();
 
@@ -53,17 +45,15 @@ public:
 	bool m_keyIsHeld;
 
 	std::vector<CubeCell> m_temporaryCellularVector;
-	std::vector<int> m_raytraceCells;
+
+	std::vector<Genome> m_genomesForTesting;
+	Genome* m_currentGenome;
 
 	Camera m_camera;
 	OpenGLRenderer m_renderer;
 
-	unsigned int m_cellFocusRange;
-
 	float m_mousePositionXDifference;
 	float m_mousePositionZDifference;
-	float m_textureX;
-	float m_textureY;
 
 	bool m_is2DWorld;
 	bool m_isPaused;

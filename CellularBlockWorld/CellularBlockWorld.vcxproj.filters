@@ -99,6 +99,9 @@
     <ClInclude Include="Engine\Matrix\MatrixStack.hpp">
       <Filter>Engine\Matrix</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Genome.hpp">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Rust_330.fragment.glsl">

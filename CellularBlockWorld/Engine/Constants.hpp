@@ -40,7 +40,13 @@ namespace ConstantParameters
 	const unsigned int SOLID_BLOCK_PERCENTAGE_2D = 50;
 	const unsigned int SOLID_BLOCK_PERCENTAGE_3D = 15;
 
+	const float ONE_STEP_CELL_DISTANCE = 1.f;
+	const float TWO_STEP_CELL_DISTANCE = 0.71f;
+	const float THREE_STEP_CELL_DISTANCE = 0.58f;
+
 //2D checks 8 Cubes
+	
+	
 	const unsigned int PRODUCE_LIFE_THRESHOLD_2D = 3;
 	const unsigned int REMOVE_LIFE_THRESHOLD_UPPERBOUND_2D = 4;
 	const unsigned int REMOVE_LIFE_THRESHOLD_LOWERBOUND_2D = 1;
@@ -59,19 +65,6 @@ namespace ConstantParameters
 	const unsigned int REMOVE_LIFE_THRESHOLD_LOWERBOUND_3D = 3;
 
 	const double TIME_BETWEEN_CA_STEPS = 0.25;
-
-	
-// 	const unsigned int PRODUCE_LIFE_THRESHOLD_LOWERBOUND_3D = 5;
-// 	const unsigned int PRODUCE_LIFE_THRESHOLD_UPPERBOUND_3D = 5;
-// 	const unsigned int REMOVE_LIFE_THRESHOLD_UPPERBOUND_3D = 8;
-// 	const unsigned int REMOVE_LIFE_THRESHOLD_LOWERBOUND_3D = 1;
-
-/*
----Immigration Variant---
-Same as original but with two Living states. 
-When a new cell is born, it takes on the ON state that is the majority in the three cells that gave it birth.
-*/
-	
 }
 
 #endif //included_Constants

@@ -257,7 +257,7 @@ void OpenGLRenderer::Initialize() {
 }
 
 //-----------------------------------------------------------------------------------------------
-void OpenGLRenderer::AddCubeToBuffer( const Vector3& minPosition ) {
+void OpenGLRenderer::AddCubeToBuffer( const Vector3& minPosition, float lifeValue ) {
 	Vector3 newPosition = Vector3(0.f, 0.f, 0.f);
 	unsigned char sideValue;
 	
@@ -265,73 +265,73 @@ void OpenGLRenderer::AddCubeToBuffer( const Vector3& minPosition ) {
 	//normal = Vector3(0.f, -1.f, 0.f);
 	sideValue = 0;
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z + 1.f);
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	
 	//RIGHT
 	//normal = Vector3(1.f, 0.f, 0.f);
 	sideValue = 1;
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z + 1.f);
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z + 1.f);
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 
 	//BACK
 	//normal = Vector3(0.f, 1.f, 0.f);
 	sideValue = 2;
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 
 	//TOP
 	//normal = Vector3(0.f, 0.f, 1.f);
 	sideValue = 3;
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 
 	//LEFT
 	//normal = Vector3(-1.f, 0.f, 0.f);
 	sideValue = 4;
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z + 1.f );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 
 	//BOTTOM
 	//normal = Vector3(0.f, 0.f, -1.f);
 	sideValue = 5;
 	newPosition = Vector3( minPosition.x, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y + 1.f, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 	newPosition = Vector3( minPosition.x + 1.f, minPosition.y, minPosition.z );
-	m_blockVertices.push_back( Vertex( newPosition, sideValue ) );
+	m_blockVertices.push_back( Vertex( newPosition, sideValue, lifeValue ) );
 }
 
 //---------------------
