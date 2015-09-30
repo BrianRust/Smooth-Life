@@ -22,7 +22,7 @@ World::World(  )
 
 //----------------------------------------------------
 void World::Initialize() {
-	m_genomesForTesting.push_back(Genome(0.5f, 0.5f, 0.5f, 0.1875f, 0.4375f, 0.3125f, ConstantParameters::SOLID_BLOCK_PERCENTAGE_2D));
+	m_genomesForTesting.push_back(Genome(0.05f, 0.05f, 0.05f, 0.1875f, 0.4375f, 0.3125f, ConstantParameters::SOLID_BLOCK_PERCENTAGE_2D));
 	m_currentGenome = &m_genomesForTesting[0];
 	
 	for (unsigned int index = 0; index < ConstantParameters::TOTAL_BLOCKS_IN_ZONE; index++) {
@@ -251,48 +251,65 @@ void World::GameOfLifeCellularAutomataPass2D() {
 
 	float TOTAL_SURROUNDING_LIFE = 0.f;
 	float LIFE_AVERAGE = 0.f;
-	float NUM_SURROUNDING_CELLS = 0.f;
+	const unsigned int NUM_SURROUNDING_CELLS_INT = 8;
+	const float INVERSE_NUM_SURROUNDING_CELLS = 1.f/8.f;
+
+	unsigned int surroundingCellIndices[8];
+	float surroundingCellSteps[8];
+
+	//set feathering values
+	surroundingCellSteps[0] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //left
+	surroundingCellSteps[1] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //bottom
+	surroundingCellSteps[2] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //bottom left
+	surroundingCellSteps[3] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //top
+	surroundingCellSteps[4] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //top left
+	surroundingCellSteps[5] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //right
+	surroundingCellSteps[6] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //bottom right
+	surroundingCellSteps[7] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //top right
 	
 	for (unsigned int index = 0; index < ConstantParameters::WIDTH_TIMES_HEIGHT; index++) {
 		x = index & ConstantParameters::BLOCKS_X_AXIS - 1;
 		y = (index >> ConstantParameters::BLOCKS_Y_POWER) & ConstantParameters::BLOCKS_Y_AXIS - 1;
 		z = (index >> ConstantParameters::BLOCKS_XY_POWER) & ConstantParameters::BLOCKS_Z_AXIS - 1;
 
-		if ( x > 0 ) {	//left
-			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index - 1 ].m_lifeValue * ConstantParameters::ONE_STEP_CELL_DISTANCE ); //left
-			NUM_SURROUNDING_CELLS++;
-
-			if ( y > 0 ) {
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::ONE_STEP_CELL_DISTANCE ); //bottom
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index - 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //left bottom
-				NUM_SURROUNDING_CELLS++;
-				NUM_SURROUNDING_CELLS++;
-			}
-
-			if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::ONE_STEP_CELL_DISTANCE ); //top
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index - 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //left top
-				NUM_SURROUNDING_CELLS++;
-				NUM_SURROUNDING_CELLS++;
-			}
+		//get surrounding indices
+		if ( x > 0 ) {
+			surroundingCellIndices[0] = index - 1; //left
+		} else {
+			surroundingCellIndices[0] = ( index + ConstantParameters::BLOCKS_X_AXIS ) - 1; //left
 		}
 
-		if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {	//right
-			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + 1 ].m_lifeValue * ConstantParameters::ONE_STEP_CELL_DISTANCE ); //right
-			NUM_SURROUNDING_CELLS++;
-			
-			if ( y > 0 ) {	//bottom right
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //bottom right
-				NUM_SURROUNDING_CELLS++;
-			}
-
-			if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {	//above right
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //above right
-				NUM_SURROUNDING_CELLS++;
-			}
+		if ( y > 0 ) {
+			surroundingCellIndices[1] = index - ConstantParameters::BLOCKS_Y_AXIS; //bottom
+			surroundingCellIndices[2] = surroundingCellIndices[0] - ConstantParameters::BLOCKS_Y_AXIS; //bottom left
+		} else {
+			surroundingCellIndices[1] = index + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //bottom
+			surroundingCellIndices[2] = surroundingCellIndices[0] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //bottom left
 		}
 
-		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE / NUM_SURROUNDING_CELLS;
+		if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
+			surroundingCellIndices[3] = index + ConstantParameters::BLOCKS_Y_AXIS; //top
+			surroundingCellIndices[4] = surroundingCellIndices[0] + ConstantParameters::BLOCKS_Y_AXIS; //top left
+		} else {
+			surroundingCellIndices[3] = index - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //top
+			surroundingCellIndices[4] = surroundingCellIndices[0] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //top left
+		}
+
+		if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {
+			surroundingCellIndices[5] = index + 1; //right
+			surroundingCellIndices[6] = surroundingCellIndices[1] + 1; //bottom right
+			surroundingCellIndices[7] = surroundingCellIndices[3] + 1; //top right
+		} else {
+			surroundingCellIndices[5] = index - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //right
+			surroundingCellIndices[6] = surroundingCellIndices[1] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //bottom right
+			surroundingCellIndices[7] = surroundingCellIndices[3] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //top right
+		}
+
+		//get total surrounding life and average
+		for ( unsigned int surroundingIndex = 0; surroundingIndex < NUM_SURROUNDING_CELLS_INT; surroundingIndex++ ) {
+			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ surroundingCellIndices[surroundingIndex] ].m_lifeValue * surroundingCellSteps[surroundingIndex] );
+		}
+		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELLS;
 
 		if ( ( LIFE_AVERAGE > m_currentGenome->m_starveThreshold ) && ( LIFE_AVERAGE < m_currentGenome->m_stableThreshold) ) { //gain life
 			float lifeGainedOffset = ( 1.f - ( std::abs( ( LIFE_AVERAGE / m_currentGenome->m_maxBirthThreshold ) - 1.f ) ) );
@@ -311,7 +328,7 @@ void World::GameOfLifeCellularAutomataPass2D() {
 		}
 
 		TOTAL_SURROUNDING_LIFE = 0.f;
-		NUM_SURROUNDING_CELLS = 0.f;
+		//NUM_SURROUNDING_CELLS = 0.f;
 		LIFE_AVERAGE = 0.f;
 	}
 
@@ -337,153 +354,128 @@ void World::GameOfLifeCellularAutomataPass3D() {
 
 	float TOTAL_SURROUNDING_LIFE = 0.f;
 	float LIFE_AVERAGE = 0.f;
-	float NUM_SURROUNDING_CELLS = 0.f;
+
+	const unsigned int NUM_SURROUNDING_CELLS_INT = 26;
+	const float INVERSE_NUM_SURROUNDING_CELLS = 1.f/26.f;
+
+	unsigned int surroundingCellIndices[26];
+	float surroundingCellSteps[26];
+
+	//set feathering values
+	surroundingCellSteps[0] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //left
+	surroundingCellSteps[1] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //bottom
+	surroundingCellSteps[2] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //bottom left
+	surroundingCellSteps[3] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //top
+	surroundingCellSteps[4] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //top left
+	surroundingCellSteps[5] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //right
+	surroundingCellSteps[6] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //bottom right
+	surroundingCellSteps[7] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //top right
+	surroundingCellSteps[8] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //above
+	surroundingCellSteps[9] = ConstantParameters::ONE_STEP_CELL_DISTANCE; //below
+	surroundingCellSteps[10] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //above left
+	surroundingCellSteps[11] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //below left
+	surroundingCellSteps[12] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //above bottom
+	surroundingCellSteps[13] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //below bottom
+	surroundingCellSteps[14] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //above bottom left
+	surroundingCellSteps[15] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //below bottom left
+	surroundingCellSteps[16] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //above top
+	surroundingCellSteps[17] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //below top
+	surroundingCellSteps[18] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //above top left
+	surroundingCellSteps[19] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //below top left
+	surroundingCellSteps[20] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //above right
+	surroundingCellSteps[21] = ConstantParameters::TWO_STEP_CELL_DISTANCE; //below right
+	surroundingCellSteps[22] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //above bottom right
+	surroundingCellSteps[23] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //below bottom right
+	surroundingCellSteps[24] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //above top right
+	surroundingCellSteps[25] = ConstantParameters::THREE_STEP_CELL_DISTANCE; //below top right
 	
 	for (unsigned int index = 0; index < ConstantParameters::TOTAL_BLOCKS_IN_ZONE; index++) {
 		x = index & ConstantParameters::BLOCKS_X_AXIS - 1;
 		y = (index >> ConstantParameters::BLOCKS_Y_POWER) & ConstantParameters::BLOCKS_Y_AXIS - 1;
 		z = (index >> ConstantParameters::BLOCKS_XY_POWER) & ConstantParameters::BLOCKS_Z_AXIS - 1;
 
-		//Above
+		//get surrounding indices
 		if ( z < ( ConstantParameters::BLOCKS_Z_AXIS - 1 ) ) {
-			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT ].m_lifeValue * ConstantParameters::ONE_STEP_CELL_DISTANCE ); //above
-			NUM_SURROUNDING_CELLS++;
-
-			if ( x > 0 ) {	//above left
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT - 1 ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //above left
-				NUM_SURROUNDING_CELLS++;
-				
-				if ( y > 0 ) {
-					TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //above bottom
-					NUM_SURROUNDING_CELLS++;
-					
-					TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT - 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::THREE_STEP_CELL_DISTANCE ); //above left bottom
-					NUM_SURROUNDING_CELLS++;
-				}
-
-				if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
-					TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT + ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //above top
-					NUM_SURROUNDING_CELLS++;
-
-					TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT - 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::THREE_STEP_CELL_DISTANCE ); //above left top
-					NUM_SURROUNDING_CELLS++;
-				}
-			}
-
-			if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {	//above right
-				TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT + 1 ].m_lifeValue * ConstantParameters::TWO_STEP_CELL_DISTANCE ); //above right
-				NUM_SURROUNDING_CELLS++;
-				
-				if ( y > 0 ) {	//above right bottom
-					TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT + 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_lifeValue * ConstantParameters::THREE_STEP_CELL_DISTANCE ); //above right bottom
-					NUM_SURROUNDING_CELLS++;
-					
-				}
-
-				//where i was
-				if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {	//above right top
-					if ( m_worldBlockCells[ index + ConstantParameters::WIDTH_TIMES_HEIGHT + 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {
-						SOLID_COUNTER++;
-					}
-				}
-			}
+			surroundingCellIndices[8] = index + ConstantParameters::WIDTH_TIMES_HEIGHT; //above
+		} else {
+			surroundingCellIndices[8] = index - ( ConstantParameters::WIDTH_TIMES_HEIGHT * ( ConstantParameters::BLOCKS_Z_AXIS - 1 ) ); //above
 		}
 
-		//Below
 		if ( z > 0 ) {
-			if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT ].m_isSolid ) {	//below
-				SOLID_COUNTER++;
-			}
-
-			if ( x > 0 ) {	//below left
-				if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT - 1 ].m_isSolid ) {	//below left
-					SOLID_COUNTER++;
-				}
-
-				if ( y > 0 ) {
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {	//below bottom
-						SOLID_COUNTER++;
-					}
-
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT - 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) { //below left bottom
-						SOLID_COUNTER++;
-					}
-				}
-
-				if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {	//below top
-						SOLID_COUNTER++;
-					}
-
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT - 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) { //below left top
-						SOLID_COUNTER++;
-					}
-				}
-			}
-
-			if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {	//below right
-				if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT + 1 ].m_isSolid ) {	//below right
-					SOLID_COUNTER++;
-				}
-
-				if ( y > 0 ) {	//below right bottom
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT + 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {
-						SOLID_COUNTER++;
-					}
-				}
-
-				if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {	//below right top
-					if ( m_worldBlockCells[ index - ConstantParameters::WIDTH_TIMES_HEIGHT + 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {
-						SOLID_COUNTER++;
-					}
-				}
-			}
+			surroundingCellIndices[9] = index - ConstantParameters::WIDTH_TIMES_HEIGHT; //below
+		} else {
+			surroundingCellIndices[9] = index + ( ConstantParameters::WIDTH_TIMES_HEIGHT * ( ConstantParameters::BLOCKS_Z_AXIS - 1 ) ); //below
 		}
 
-		//Middle
-		if ( x > 0 ) {	//left
-			if ( m_worldBlockCells[ index - 1 ].m_isSolid ) {	//left
-				SOLID_COUNTER++;
-			}
-
-			if ( y > 0 ) {
-				if ( m_worldBlockCells[ index - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {	//bottom
-					SOLID_COUNTER++;
-				}
-
-				if ( m_worldBlockCells[ index - 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {	//left bottom
-					SOLID_COUNTER++;
-				}
-			}
-
-			if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
-				if ( m_worldBlockCells[ index + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) { //top
-					SOLID_COUNTER++;
-				}
-
-				if ( m_worldBlockCells[ index - 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid ) {	//left top
-					SOLID_COUNTER++;
-				}
-			}
+		if ( x > 0 ) {
+			surroundingCellIndices[0] = index - 1; //left
+			surroundingCellIndices[10] = surroundingCellIndices[8] - 1; //above left
+			surroundingCellIndices[11] = surroundingCellIndices[9] - 1; //below left
+		} else {
+			surroundingCellIndices[0] = index + ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //left
+			surroundingCellIndices[10] = surroundingCellIndices[8] + ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //above left
+			surroundingCellIndices[11] = surroundingCellIndices[9] + ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //below left
 		}
 
-		if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {	//right
-			if ( m_worldBlockCells[ index + 1 ].m_isSolid ) {	//right
-				SOLID_COUNTER++;
-			}
-
-			if ( y > 0 ) {	//bottom right
-				if ( m_worldBlockCells[ index + 1 - ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid )
-					SOLID_COUNTER++;
-			}
-
-			if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {	//above right
-				if ( m_worldBlockCells[ index + 1 + ConstantParameters::BLOCKS_Y_AXIS ].m_isSolid )
-					SOLID_COUNTER++;
-			}
+		if ( y > 0 ) {
+			surroundingCellIndices[1] = index - ConstantParameters::BLOCKS_Y_AXIS; //bottom
+			surroundingCellIndices[12] = surroundingCellIndices[8] - ConstantParameters::BLOCKS_Y_AXIS; //above bottom
+			surroundingCellIndices[13] = surroundingCellIndices[9] - ConstantParameters::BLOCKS_Y_AXIS; //below bottom
+			surroundingCellIndices[2] = surroundingCellIndices[0] - ConstantParameters::BLOCKS_Y_AXIS; //bottom left
+			surroundingCellIndices[14] = surroundingCellIndices[10] - ConstantParameters::BLOCKS_Y_AXIS; //above bottom left
+			surroundingCellIndices[15] = surroundingCellIndices[11] - ConstantParameters::BLOCKS_Y_AXIS; //below bottom left
+		} else {
+			surroundingCellIndices[1] = index + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //bottom
+			surroundingCellIndices[12] = surroundingCellIndices[8] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //above bottom
+			surroundingCellIndices[13] = surroundingCellIndices[9] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //below bottom
+			surroundingCellIndices[2] = surroundingCellIndices[0] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //bottom left
+			surroundingCellIndices[14] = surroundingCellIndices[10] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //above bottom left
+			surroundingCellIndices[15] = surroundingCellIndices[11] + ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //below bottom left
 		}
 
-		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE / NUM_SURROUNDING_CELLS;
+		if ( y < ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) ) {
+			surroundingCellIndices[3] = index + ConstantParameters::BLOCKS_Y_AXIS; //top
+			surroundingCellIndices[16] = surroundingCellIndices[8] + ConstantParameters::BLOCKS_Y_AXIS; //above top
+			surroundingCellIndices[17] = surroundingCellIndices[9] + ConstantParameters::BLOCKS_Y_AXIS; //below top
+			surroundingCellIndices[4] = surroundingCellIndices[0] + ConstantParameters::BLOCKS_Y_AXIS; //top left
+			surroundingCellIndices[18] = surroundingCellIndices[10] + ConstantParameters::BLOCKS_Y_AXIS; //above top left
+			surroundingCellIndices[19] = surroundingCellIndices[11] + ConstantParameters::BLOCKS_Y_AXIS; //below top left
+		} else {
+			surroundingCellIndices[3] = index - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //top
+			surroundingCellIndices[16] = surroundingCellIndices[8] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //above top
+			surroundingCellIndices[17] = surroundingCellIndices[9] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //below top
+			surroundingCellIndices[4] = surroundingCellIndices[0] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //top left
+			surroundingCellIndices[18] = surroundingCellIndices[10] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //above top left
+			surroundingCellIndices[19] = surroundingCellIndices[11] - ( ( ConstantParameters::BLOCKS_Y_AXIS - 1 ) * ConstantParameters::BLOCKS_X_AXIS ); //below top left
+		}
+
+		if ( x < ( ConstantParameters::BLOCKS_X_AXIS - 1 ) ) {
+			surroundingCellIndices[5] = index + 1; //right
+			surroundingCellIndices[20] = surroundingCellIndices[8] + 1; //above right
+			surroundingCellIndices[21] = surroundingCellIndices[9] + 1; //below right
+			surroundingCellIndices[6] = surroundingCellIndices[1] + 1; //bottom right
+			surroundingCellIndices[22] = surroundingCellIndices[12] + 1; //above bottom right
+			surroundingCellIndices[23] = surroundingCellIndices[13] + 1; //below bottom right
+			surroundingCellIndices[7] = surroundingCellIndices[3] + 1; //top right
+			surroundingCellIndices[24] = surroundingCellIndices[16] + 1; //above top right
+			surroundingCellIndices[25] = surroundingCellIndices[17] + 1; //below top right
+		} else {
+			surroundingCellIndices[5] = index - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //right
+			surroundingCellIndices[20] = surroundingCellIndices[8] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //above right
+			surroundingCellIndices[21] = surroundingCellIndices[9] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //below right
+			surroundingCellIndices[6] = surroundingCellIndices[1] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //bottom right
+			surroundingCellIndices[22] = surroundingCellIndices[12] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //above bottom right
+			surroundingCellIndices[23] = surroundingCellIndices[13] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //below bottom right
+			surroundingCellIndices[7] = surroundingCellIndices[3] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //top right
+			surroundingCellIndices[24] = surroundingCellIndices[16] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //above top right
+			surroundingCellIndices[25] = surroundingCellIndices[17] - ( ConstantParameters::BLOCKS_X_AXIS - 1 ); //below top right
+		}
+
+		//get total surrounding life and average
+		for ( unsigned int surroundingIndex = 0; surroundingIndex < NUM_SURROUNDING_CELLS_INT; surroundingIndex++ ) {
+			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ surroundingCellIndices[surroundingIndex] ].m_lifeValue * surroundingCellSteps[surroundingIndex] );
+		}
+		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELLS;
 
 		if ( ( LIFE_AVERAGE > m_currentGenome->m_starveThreshold ) && ( LIFE_AVERAGE < m_currentGenome->m_stableThreshold) ) { //gain life
 			float lifeGainedOffset = ( 1.f - ( std::abs( ( LIFE_AVERAGE / m_currentGenome->m_maxBirthThreshold ) - 1.f ) ) );
@@ -502,7 +494,6 @@ void World::GameOfLifeCellularAutomataPass3D() {
 		}
 
 		TOTAL_SURROUNDING_LIFE = 0.f;
-		NUM_SURROUNDING_CELLS = 0.f;
 		LIFE_AVERAGE = 0.f;
 	}
 

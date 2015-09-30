@@ -243,8 +243,9 @@ void OpenGLRenderer::Initialize() {
 	m_cameraPosition = glGetUniformLocation(m_shaderProgramID, "u_cameraPosition");
 	m_modelViewProjectionUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_modelViewProjectionMatrix");
 	//m_normalAttributeLocation = glGetUniformLocation(m_shaderProgramID, "u_normal");
-	m_normalAttributeLocation = glGetAttribLocation(m_shaderProgramID, "v_Normal");
-	m_vertexAttributeLocation = glGetAttribLocation(m_shaderProgramID, "v_Vertex");
+	m_normalAttributeLocation = glGetAttribLocation(m_shaderProgramID, "i_Normal");
+	m_vertexAttributeLocation = glGetAttribLocation(m_shaderProgramID, "i_Vertex");
+	m_lifeValueAttributeLocation = glGetAttribLocation(m_shaderProgramID, "i_Color");
 
 	glGenBuffers(1, &m_blockVBOid);
 	isInitializing = true;
@@ -373,23 +374,23 @@ void OpenGLRenderer::SendCubeVBO() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, m_blockVBOid);
 	glEnableVertexAttribArray(m_vertexAttributeLocation);
-	//glVertexAttribPointer(m_vertexAttributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (float*) offsetof(Vertex, vertexPosition));
 	glVertexAttribPointer(m_vertexAttributeLocation, 3, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (float*) offsetof(Vertex, positionBytes));
-	//glVertexAttribIPointer(m_vertexAttributeLocation, 3, GL_UNSIGNED_BYTE, sizeof(Vertex), (unsigned char*) offsetof(Vertex, positionBytes));
 	glEnableVertexAttribArray(m_normalAttributeLocation);
 	glVertexAttribPointer(m_normalAttributeLocation, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (unsigned char*) offsetof(Vertex, side));
-	//glVertexAttribIPointer(m_normalAttributeLocation, 1, GL_UNSIGNED_BYTE, sizeof(Vertex), (unsigned char*) offsetof(Vertex, side));
+	glEnableVertexAttribArray(m_lifeValueAttributeLocation);
+	glVertexAttribPointer(m_lifeValueAttributeLocation, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (float*) offsetof(Vertex, color));
 
 	glDrawArrays(GL_QUADS, 0, m_blockVertices.size());
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
-	glUniform1i( m_wireFrameBoolLocation, 0);
-	glDrawArrays(GL_QUADS, 0, m_blockVertices.size());
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
+// 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+// 	glUniform1i( m_wireFrameBoolLocation, 0);
+// 	glDrawArrays(GL_QUADS, 0, m_blockVertices.size());
+// 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
 
 
 	glDisableVertexAttribArray(m_vertexAttributeLocation);
 	glDisableVertexAttribArray(m_normalAttributeLocation);
+	glDisableVertexAttribArray(m_lifeValueAttributeLocation);
 }
 
 //----------------------

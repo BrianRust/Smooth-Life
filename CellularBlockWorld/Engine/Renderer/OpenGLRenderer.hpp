@@ -54,6 +54,7 @@ public:
 	GLuint m_modelViewProjectionUniformLocation;
 	GLuint m_normalAttributeLocation;
 	GLuint m_vertexAttributeLocation;
+	GLuint m_lifeValueAttributeLocation;
 };
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;

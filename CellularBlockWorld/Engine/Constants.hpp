@@ -37,7 +37,7 @@ namespace ConstantParameters
 	const unsigned int WIDTH_TIMES_HEIGHT = BLOCKS_X_AXIS * BLOCKS_Y_AXIS;
 	const unsigned int WIDTH_TIMES_DEPTH = BLOCKS_X_AXIS * BLOCKS_Z_AXIS;
 	const unsigned int TOTAL_BLOCKS_IN_ZONE = BLOCKS_X_AXIS * BLOCKS_Y_AXIS * BLOCKS_Z_AXIS;
-	const unsigned int SOLID_BLOCK_PERCENTAGE_2D = 50;
+	const unsigned int SOLID_BLOCK_PERCENTAGE_2D = 35;
 	const unsigned int SOLID_BLOCK_PERCENTAGE_3D = 15;
 
 	const float ONE_STEP_CELL_DISTANCE = 1.f;

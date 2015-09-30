@@ -8,69 +8,45 @@
 //			typically the world-to-screen transform
 uniform mat4 u_modelViewProjectionMatrix;
 
-in vec4 v_Vertex;
-//in uint v_Vertex[3];
-
-//in uint v_Normal;
-
-in float v_Normal;
+in vec4 i_Vertex;
+in float i_Normal;
+in float i_Color;
 
 //	OUTPUTS
 //		gl_Position : vertex position in screen space (for OpenGL to make triangles out of)
-//		v_screenPosition : vertex position in screen space (for me, to pass to my own fragment shader)
+//		o_screenPosition : vertex position in screen space (for me, to pass to my own fragment shader)
 
-out vec4 v_screenPosition;
-out vec4 v_worldPosition;
-out vec3 v_normal;
-out vec4 v_surfaceColor;
+out vec4 o_screenPosition;
+out vec4 o_worldPosition;
+out vec3 o_normal;
+out vec4 o_surfaceColor;
 
 void main()
 {
-	//vec4 floatVertex = vec4( v_Vertex[0], v_Vertex[1], v_Vertex[2], 1.0 );
-	vec4 floatVertex = v_Vertex;
+	vec4 floatVertex = i_Vertex;
 	
 	gl_Position = u_modelViewProjectionMatrix * floatVertex;
-	v_screenPosition = gl_Position;
-	v_worldPosition = floatVertex;
+	o_screenPosition = gl_Position;
+	o_worldPosition = floatVertex;
 
-	//clamp(dot( v_normal, lightToPoint ), 0.0, 1.0)
-
-	v_normal = vec3(0.0, 0.0, 0.0);
-	v_surfaceColor = vec4(0.0, 0.0, 0.0, 1.0);
+	o_normal = vec3(0.0, 0.0, 0.0);
+	o_surfaceColor = vec4(i_Color, i_Color, i_Color, 1.0);
 
 	//0
-	v_normal += vec3(0.0, -1.0, 0.0);
-	v_surfaceColor.rgb += vec3(0.0, 1.0, 0.0);
-	//normal(0.0, -1.0, 0.0)
-	//color(0.0, 1.0, 0.0)
+	o_normal += vec3(0.0, -1.0, 0.0);
 	
 	//1
-	v_normal += vec3(1.0, 1.0, 0.0) * mix(1.0, 0.0, clamp(sign(1.0 - v_Normal), 0.0, 1.0));
-	v_surfaceColor.rgb += vec3(1.0, 0.0, 0.0) * mix(1.0, 0.0, clamp(sign(1.0 - v_Normal), 0.0, 1.0));
-	//normal(1.0, 0.0, 0.0)
-	//color(1.0, 1.0, 0.0)
+	o_normal += vec3(1.0, 1.0, 0.0) * mix(1.0, 0.0, clamp(sign(1.0 - i_Normal), 0.0, 1.0));
 
 	//2
-	v_normal += vec3(-1.0, 1.0, 0.0) * mix(1.0, 0.0, clamp(sign(2.0 - v_Normal), 0.0, 1.0));
-	v_surfaceColor.rgb += vec3(-1.0, 0.0, 1.0) * mix(1.0, 0.0, clamp(sign(2.0 - v_Normal), 0.0, 1.0));
-	//normal(0.0, 1.0, 0.0)
-	//color(0.0, 1.0, 1.0)
+	o_normal += vec3(-1.0, 1.0, 0.0) * mix(1.0, 0.0, clamp(sign(2.0 - i_Normal), 0.0, 1.0));
 
 	//3
-	v_normal += vec3(0.0, -1.0, 1.0) * mix(1.0, 0.0, clamp(sign(3.0 - v_Normal), 0.0, 1.0));
-	v_surfaceColor.rgb += vec3(1.0, -1.0, 0.0) * mix(1.0, 0.0, clamp(sign(3.0 - v_Normal), 0.0, 1.0));
-	//normal(0.0, 0.0, 1.0)
-	//color(1.0, 0.0, 1.0)
+	o_normal += vec3(0.0, -1.0, 1.0) * mix(1.0, 0.0, clamp(sign(3.0 - i_Normal), 0.0, 1.0));
 
 	//4
-	v_normal += vec3(-1.0, 0.0, -1.0) * mix(1.0, 0.0, clamp(sign(4.0 - v_Normal), 0.0, 1.0));
-	v_surfaceColor.rgb += vec3(0.0, 0.0, -1.0) * mix(1.0, 0.0, clamp(sign(4.0 - v_Normal), 0.0, 1.0));
-	//normal(-1.0, 0.0, 0.0)
-	//color(1.0, 0.0, 0.0)
+	o_normal += vec3(-1.0, 0.0, -1.0) * mix(1.0, 0.0, clamp(sign(4.0 - i_Normal), 0.0, 1.0));
 
 	//5
-	v_normal += vec3(1.0, 0.0, -1.0) * mix(1.0, 0.0, clamp(sign(5.0 - v_Normal), 0.0, 1.0));
-	v_surfaceColor.rgb += vec3(-1.0, 0.0, 1.0) * mix(1.0, 0.0, clamp(sign(5.0 - v_Normal), 0.0, 1.0));
-	//normal(0.0, 0.0, -1.0)
-	//color(0.0, 0.0, 1.0)
+	o_normal += vec3(1.0, 0.0, -1.0) * mix(1.0, 0.0, clamp(sign(5.0 - i_Normal), 0.0, 1.0));
 }
