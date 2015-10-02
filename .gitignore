@@ -45,3 +45,11 @@ Temporary Items
 *.unsuccessfulbuild
 CellularBlockWorld/Release/CellularBlockWorld.lastbuildstate
 *.manifest
+*.idb
+*.rc
+*.lastbuildstate
+*.res
+*.filters
+*.filters
+*.vcxproj
+CellularBlockWorld/CellularBlockWorld.vcxproj.filters

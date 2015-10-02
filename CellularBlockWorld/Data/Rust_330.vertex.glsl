@@ -30,7 +30,7 @@ void main()
 	o_worldPosition = floatVertex;
 
 	o_normal = vec3(0.0, 0.0, 0.0);
-	o_surfaceColor = vec4(i_Color, i_Color, i_Color, 1.0);
+	o_surfaceColor = vec4(0.0, i_Color, i_Color, 1.0);
 
 	//0
 	o_normal += vec3(0.0, -1.0, 0.0);

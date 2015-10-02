@@ -110,6 +110,8 @@
     <ClCompile Include="Engine\Matrix\MatrixStack.cpp" />
     <ClCompile Include="Engine\Renderer\OpenGLRenderer.cpp" />
     <ClCompile Include="Engine\Time\Time.cpp" />
+    <ClCompile Include="Game\Director.cpp" />
+    <ClCompile Include="Game\Population.cpp" />
     <ClCompile Include="Game\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +131,9 @@
     <ClInclude Include="Engine\Renderer\OpenGLRenderer.hpp" />
     <ClInclude Include="Engine\Time\Time.hpp" />
     <ClInclude Include="Game\CubeCell.hpp" />
+    <ClInclude Include="Game\Director.hpp" />
     <ClInclude Include="Game\Genome.hpp" />
+    <ClInclude Include="Game\Population.hpp" />
     <ClInclude Include="Game\World.hpp" />
   </ItemGroup>
   <ItemGroup>

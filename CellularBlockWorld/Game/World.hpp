@@ -14,7 +14,7 @@
 #include "../Engine/Time/Time.hpp"
 #include "../Engine/Renderer/OpenGLRenderer.hpp"
 #include "CubeCell.hpp"
-#include "Genome.hpp"
+#include "Director.hpp"
 
 //-------------------------------------------------------------
 class World

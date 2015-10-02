@@ -20,6 +20,8 @@ public:
 
 		m_initialLifePercentageInWorld = 0;
 		m_maxBirthThreshold = 0.f;
+
+		m_fitnessScore = 0.f;
 	};
 
 	Genome(float starveLoss, float crowdLoss, float birthGain, float starveThreshold, float crowdThreshold, float stableThreshold, int lifeRatio)
@@ -32,8 +34,9 @@ public:
 		m_stableThreshold = stableThreshold;
 
 		m_initialLifePercentageInWorld = lifeRatio;
-
 		m_maxBirthThreshold = (stableThreshold + starveThreshold) * 0.5f;
+
+		m_fitnessScore = 0.f;
 	};
 	
 	float m_maxStarveLossPerStep;
@@ -45,6 +48,8 @@ public:
 
 	float m_maxBirthThreshold;
 	int m_initialLifePercentageInWorld;
+
+	float m_fitnessScore;
 	
 	/*
 		Max starve loss per step
@@ -55,6 +60,16 @@ public:
 		Stable threshold
 		Initial ratio of living cells
 	*/
+};
+
+inline bool operator < (const Genome& first, const Genome& second)
+{
+	if (first.m_fitnessScore < second.m_fitnessScore) {
+		return true;
+	}
+	else {
+		return false;
+	}
 };
 
 #endif //included_Genome

@@ -8,6 +8,9 @@
 //-------------------------------------------------------------
 namespace ConstantParameters
 {
+	const unsigned int POPULATION_SIZE = 5;
+	const unsigned int NUM_GENERATIONS = 3;
+	
 	const float PI = 3.1415926535897932384626433832795f;
 	const float CONVERTING_TO_RADIANS = PI/180.f;
 	const float CONVERTING_TO_DEGREES = 180.f/PI;
@@ -37,7 +40,7 @@ namespace ConstantParameters
 	const unsigned int WIDTH_TIMES_HEIGHT = BLOCKS_X_AXIS * BLOCKS_Y_AXIS;
 	const unsigned int WIDTH_TIMES_DEPTH = BLOCKS_X_AXIS * BLOCKS_Z_AXIS;
 	const unsigned int TOTAL_BLOCKS_IN_ZONE = BLOCKS_X_AXIS * BLOCKS_Y_AXIS * BLOCKS_Z_AXIS;
-	const unsigned int SOLID_BLOCK_PERCENTAGE_2D = 35;
+	const unsigned int SOLID_BLOCK_PERCENTAGE_2D = 15;
 	const unsigned int SOLID_BLOCK_PERCENTAGE_3D = 15;
 
 	const float ONE_STEP_CELL_DISTANCE = 1.f;

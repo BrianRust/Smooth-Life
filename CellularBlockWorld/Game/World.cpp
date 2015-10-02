@@ -22,7 +22,7 @@ World::World(  )
 
 //----------------------------------------------------
 void World::Initialize() {
-	m_genomesForTesting.push_back(Genome(0.05f, 0.05f, 0.05f, 0.1875f, 0.4375f, 0.3125f, ConstantParameters::SOLID_BLOCK_PERCENTAGE_2D));
+	m_genomesForTesting.push_back(Genome(0.5f, 0.5f, 0.5f, 0.1875f, 0.4375f, 0.3125f, ConstantParameters::SOLID_BLOCK_PERCENTAGE_2D));
 	m_currentGenome = &m_genomesForTesting[0];
 	
 	for (unsigned int index = 0; index < ConstantParameters::TOTAL_BLOCKS_IN_ZONE; index++) {
@@ -252,7 +252,7 @@ void World::GameOfLifeCellularAutomataPass2D() {
 	float TOTAL_SURROUNDING_LIFE = 0.f;
 	float LIFE_AVERAGE = 0.f;
 	const unsigned int NUM_SURROUNDING_CELLS_INT = 8;
-	const float INVERSE_NUM_SURROUNDING_CELLS = 1.f/8.f;
+	const float INVERSE_NUM_SURROUNDING_CELL_WEIGHTS = 1.f/6.84f;
 
 	unsigned int surroundingCellIndices[8];
 	float surroundingCellSteps[8];
@@ -309,7 +309,7 @@ void World::GameOfLifeCellularAutomataPass2D() {
 		for ( unsigned int surroundingIndex = 0; surroundingIndex < NUM_SURROUNDING_CELLS_INT; surroundingIndex++ ) {
 			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ surroundingCellIndices[surroundingIndex] ].m_lifeValue * surroundingCellSteps[surroundingIndex] );
 		}
-		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELLS;
+		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELL_WEIGHTS;
 
 		if ( ( LIFE_AVERAGE > m_currentGenome->m_starveThreshold ) && ( LIFE_AVERAGE < m_currentGenome->m_stableThreshold) ) { //gain life
 			float lifeGainedOffset = ( 1.f - ( std::abs( ( LIFE_AVERAGE / m_currentGenome->m_maxBirthThreshold ) - 1.f ) ) );
@@ -327,8 +327,15 @@ void World::GameOfLifeCellularAutomataPass2D() {
 			m_temporaryCellularVector[index].m_lifeValue = m_worldBlockCells[index].m_lifeValue;
 		}
 
+		if ( m_temporaryCellularVector[index].m_lifeValue > 1.f ) {
+			m_temporaryCellularVector[index].m_lifeValue = 1.f;
+		} 
+
+		if ( m_temporaryCellularVector[index].m_lifeValue < 0.f ) {
+			m_temporaryCellularVector[index].m_lifeValue = 0.f;
+		}
+
 		TOTAL_SURROUNDING_LIFE = 0.f;
-		//NUM_SURROUNDING_CELLS = 0.f;
 		LIFE_AVERAGE = 0.f;
 	}
 
@@ -356,7 +363,7 @@ void World::GameOfLifeCellularAutomataPass3D() {
 	float LIFE_AVERAGE = 0.f;
 
 	const unsigned int NUM_SURROUNDING_CELLS_INT = 26;
-	const float INVERSE_NUM_SURROUNDING_CELLS = 1.f/26.f;
+	const float INVERSE_NUM_SURROUNDING_CELL_WEIGHTS = 1.f/19.16f;
 
 	unsigned int surroundingCellIndices[26];
 	float surroundingCellSteps[26];
@@ -475,7 +482,7 @@ void World::GameOfLifeCellularAutomataPass3D() {
 		for ( unsigned int surroundingIndex = 0; surroundingIndex < NUM_SURROUNDING_CELLS_INT; surroundingIndex++ ) {
 			TOTAL_SURROUNDING_LIFE += ( m_worldBlockCells[ surroundingCellIndices[surroundingIndex] ].m_lifeValue * surroundingCellSteps[surroundingIndex] );
 		}
-		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELLS;
+		LIFE_AVERAGE = TOTAL_SURROUNDING_LIFE * INVERSE_NUM_SURROUNDING_CELL_WEIGHTS;
 
 		if ( ( LIFE_AVERAGE > m_currentGenome->m_starveThreshold ) && ( LIFE_AVERAGE < m_currentGenome->m_stableThreshold) ) { //gain life
 			float lifeGainedOffset = ( 1.f - ( std::abs( ( LIFE_AVERAGE / m_currentGenome->m_maxBirthThreshold ) - 1.f ) ) );
@@ -491,6 +498,14 @@ void World::GameOfLifeCellularAutomataPass3D() {
 			m_temporaryCellularVector[index].m_lifeValue = ( m_worldBlockCells[index].m_lifeValue - lifeLost );
 		} else {
 			m_temporaryCellularVector[index].m_lifeValue = m_worldBlockCells[index].m_lifeValue;
+		}
+
+		if ( m_temporaryCellularVector[index].m_lifeValue > 1.f ) {
+			m_temporaryCellularVector[index].m_lifeValue = 1.f;
+		} 
+
+		if ( m_temporaryCellularVector[index].m_lifeValue < 0.f ) {
+			m_temporaryCellularVector[index].m_lifeValue = 0.f;
 		}
 
 		TOTAL_SURROUNDING_LIFE = 0.f;

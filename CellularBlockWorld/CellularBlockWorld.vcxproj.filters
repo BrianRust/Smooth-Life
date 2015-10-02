@@ -46,6 +46,12 @@
     <ClCompile Include="Engine\Matrix\MatrixStack.cpp">
       <Filter>Engine\Matrix</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Population.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Director.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Renderer\glext.h">
@@ -100,6 +106,12 @@
       <Filter>Engine\Matrix</Filter>
     </ClInclude>
     <ClInclude Include="Game\Genome.hpp">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Director.hpp">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Population.hpp">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
