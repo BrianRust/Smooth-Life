@@ -7,7 +7,6 @@ Director::Director()
 	: m_firstGenomeBuffer(Population())
 	, m_secondGenomeBuffer(Population())
 	, m_genomeHallofFame(Population())
-	, m_currentGenomeBuffer(&m_firstGenomeBuffer)
 {
 	
 }

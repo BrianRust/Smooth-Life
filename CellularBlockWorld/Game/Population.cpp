@@ -13,7 +13,6 @@ void Population::Initialize()
 		m_genomePopulation.push_back(Genome());
 		m_genomePopulation[index].m_crowdThreshold = 0.f;
 		m_genomePopulation[index].m_maxBirthsPerStep = 0.f;
-		m_genomePopulation[index].m_maxBirthThreshold = 0.f;
 		m_genomePopulation[index].m_maxCrowdLossPerStep = 0.f;
 		m_genomePopulation[index].m_maxStarveLossPerStep = 0.f;
 		m_genomePopulation[index].m_stableThreshold = 0.f;

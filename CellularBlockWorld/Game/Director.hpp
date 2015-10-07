@@ -18,7 +18,6 @@ public:
 	Population m_secondGenomeBuffer;
 	Population m_genomeHallofFame;
 
-	Population* m_currentGenomeBuffer;
 };
 
 #endif //included_Director

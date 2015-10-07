@@ -52,6 +52,9 @@
     <ClCompile Include="Game\Director.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Math\MathUtils.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Renderer\glext.h">
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="Game\Population.hpp">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\MathUtils.hpp">
+      <Filter>Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -107,6 +107,7 @@
   <ItemGroup>
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Main_Win32.cpp" />
+    <ClCompile Include="Engine\Math\MathUtils.cpp" />
     <ClCompile Include="Engine\Matrix\MatrixStack.cpp" />
     <ClCompile Include="Engine\Renderer\OpenGLRenderer.cpp" />
     <ClCompile Include="Engine\Time\Time.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="Engine\Constants.hpp" />
     <ClInclude Include="Engine\Math\IntVector2.hpp" />
     <ClInclude Include="Engine\Math\IntVector3.hpp" />
+    <ClInclude Include="Engine\Math\MathUtils.hpp" />
     <ClInclude Include="Engine\Math\MyMathFiles.hpp" />
     <ClInclude Include="Engine\Math\RGBA.hpp" />
     <ClInclude Include="Engine\Math\Vector2.hpp" />

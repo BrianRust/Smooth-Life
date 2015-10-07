@@ -19,8 +19,6 @@ public:
 		m_stableThreshold = 0.f;
 
 		m_initialLifePercentageInWorld = 0;
-		m_maxBirthThreshold = 0.f;
-
 		m_fitnessScore = 0.f;
 	};
 
@@ -34,10 +32,14 @@ public:
 		m_stableThreshold = stableThreshold;
 
 		m_initialLifePercentageInWorld = lifeRatio;
-		m_maxBirthThreshold = (stableThreshold + starveThreshold) * 0.5f;
 
 		m_fitnessScore = 0.f;
 	};
+
+	float GetMaxBirthThreshold() const
+	{
+		return (m_stableThreshold + m_starveThreshold) * 0.5f;
+	}
 	
 	float m_maxStarveLossPerStep;
 	float m_maxCrowdLossPerStep;
@@ -46,7 +48,6 @@ public:
 	float m_crowdThreshold;
 	float m_stableThreshold;
 
-	float m_maxBirthThreshold;
 	int m_initialLifePercentageInWorld;
 
 	float m_fitnessScore;
